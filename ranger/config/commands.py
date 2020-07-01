@@ -935,6 +935,7 @@ class touch(Command):
             open(fname, 'a').close()
         else:
             self.fm.notify("file/directory exists!", bad=True)
+        self.fm.select_file(fname)
 
     def tab(self, tabnum):
         return self._tab_directory_content()
