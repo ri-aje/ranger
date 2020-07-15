@@ -5,7 +5,7 @@ from __future__ import (absolute_import, division, print_function)
 
 import re
 from grp import getgrgid
-from os import lstat, stat
+from os import lstat, stat, readlink
 from os.path import abspath, basename, dirname, realpath, relpath, splitext
 from pwd import getpwuid
 from time import time
@@ -333,7 +333,7 @@ class FileSystemObject(  # pylint: disable=too-many-instance-attributes,too-many
                 self.size = 0
                 self.infostring = '?'
         if self.is_link and not self.is_directory:
-            self.infostring = '->' + self.infostring
+            self.infostring = '-> ' + readlink(self.path) + ' ' + self.infostring
 
         self.stat = new_stat
         self.last_load_time = time()

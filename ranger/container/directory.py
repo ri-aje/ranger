@@ -371,7 +371,7 @@ class Directory(  # pylint: disable=too-many-instance-attributes,too-many-public
                     self.size = len(filelist)
                     self.infostring = ' %d' % self.size
                 if self.is_link:
-                    self.infostring = '->' + self.infostring
+                    self.infostring = '-> ' + os.readlink(self.path) + ' ' + self.infostring
 
                 yield
 
