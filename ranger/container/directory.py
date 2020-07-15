@@ -295,7 +295,7 @@ class Directory(  # pylint: disable=too-many-instance-attributes,too-many-public
             filters.append(inode_filter_func)
         if self.filter:
             filter_search = self.filter.search
-            filters.append(lambda fobj: filter_search(fobj.basename))
+            filters.append(lambda fobj: filter_search(fobj.relative_path))
         if self.temporary_filter:
             temporary_filter_search = self.temporary_filter.search
             filters.append(lambda fobj: temporary_filter_search(fobj.basename))
