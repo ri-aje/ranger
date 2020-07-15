@@ -797,7 +797,7 @@ class Actions(  # pylint: disable=too-many-instance-attributes,too-many-public-m
                     return False
                 if hasattr(arg, 'search'):
                     def fnc(obj):
-                        return arg.search(obj.basename)
+                        return arg.search(obj.relative_path)
                 else:
                     def fnc(obj):
                         return arg in obj.basename
