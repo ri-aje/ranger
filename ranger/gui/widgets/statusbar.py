@@ -273,6 +273,11 @@ class StatusBar(Widget):  # pylint: disable=too-many-instance-attributes
             right.add(self.fm.thisdir.filter.pattern, base, 'filter')
             right.add("', ", "space")
 
+        if self.fm.thisdir.filter_stack:
+            right.add("fs=`", base, 'filter_stack')
+            right.add('*', base, 'filter_stack')
+            right.add("', ", "space")
+
         if target.marked_items:
             if len(target.marked_items) == target.size:
                 right.add(human_readable(target.disk_usage, separator=''))
