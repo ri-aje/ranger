@@ -1608,6 +1608,29 @@ class Actions(  # pylint: disable=too-many-instance-attributes,too-many-public-m
         else:
             self.notify('Failed to paste. The destination is invalid.', bad=True)
 
+    def mark_paste(self):
+        """:mark_paste
+
+        Mark the last pasted items in the current directory.
+        """
+        if self.thisdir is None:
+            return
+
+        cwd = self.thisdir
+
+        if not cwd.accessible:
+            return
+
+        tomark = set()
+        for src, dst in self.name_pairs:
+            tomark.add(dst)
+
+        for file in cwd.files:
+            if file.path in tomark:
+                cwd.mark_item(file, True)
+
+        self.ui.browser.main_column.request_redraw()
+
     def delete(self, files=None):
         # XXX: warn when deleting mount points/unseen marked files?
         # COMPAT: old command.py use fm.delete() without arguments
