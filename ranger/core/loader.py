@@ -53,8 +53,9 @@ class CopyLoader(Loadable, FileManagerAware):  # pylint: disable=too-many-instan
     progressbar_supported = True
 
     def __init__(self, copy_buffer, do_cut=False, overwrite=False, dest=None,
-                 make_safe_path=get_safe_path):
+                 make_safe_path=get_safe_path, name_pairs=[]):
         self.copy_buffer = tuple(copy_buffer)
+        self.name_pairs = name_pairs
         self.do_cut = do_cut
         self.original_copy_buffer = copy_buffer
         self.original_path = dest if dest is not None else self.fm.thistab.path
@@ -112,7 +113,8 @@ class CopyLoader(Loadable, FileManagerAware):  # pylint: disable=too-many-instan
                 n = 0
                 for n in shutil_g.move(src=fobj.path, dst=self.original_path,
                                        overwrite=self.overwrite,
-                                       make_safe_path=self.make_safe_path):
+                                       make_safe_path=self.make_safe_path,
+                                       name_pairs=self.name_pairs):
                     self.percent = ((done + n) / size) * 100.
                     yield
                 done += n
@@ -130,7 +132,7 @@ class CopyLoader(Loadable, FileManagerAware):  # pylint: disable=too-many-instan
                             symlinks=True,
                             overwrite=self.overwrite,
                             make_safe_path=self.make_safe_path,
-                    ):
+                            name_pairs=self.name_pairs):
                         self.percent = ((done + n) / size) * 100.
                         yield
                     done += n
@@ -138,7 +140,8 @@ class CopyLoader(Loadable, FileManagerAware):  # pylint: disable=too-many-instan
                     n = 0
                     for n in shutil_g.copy2(fobj.path, self.original_path,
                                             symlinks=True, overwrite=self.overwrite,
-                                            make_safe_path=self.make_safe_path):
+                                            make_safe_path=self.make_safe_path,
+                                            name_pairs=self.name_pairs):
                         self.percent = ((done + n) / size) * 100.
                         yield
                     done += n

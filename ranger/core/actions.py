@@ -1571,13 +1571,37 @@ class Actions(  # pylint: disable=too-many-instance-attributes,too-many-public-m
         """
         if dest is None:
             dest = self.thistab.path
+        self.name_pairs = []
         if isdir(dest):
             loadable = CopyLoader(self.copy_buffer, self.do_cut, overwrite,
-                                  dest, make_safe_path)
+                                  dest, make_safe_path, self.name_pairs)
             self.loader.add(loadable, append=append)
             self.do_cut = False
         else:
             self.notify('Failed to paste. The destination is invalid.', bad=True)
+
+    def mark_paste(self):
+        """:mark_paste
+
+        Mark the last pasted items in the current directory.
+        """
+        if self.thisdir is None:
+            return
+
+        cwd = self.thisdir
+
+        if not cwd.accessible:
+            return
+
+        tomark = set()
+        for src, dst in self.name_pairs:
+            tomark.add(dst)
+
+        for file in cwd.files:
+            if file.path in tomark:
+                cwd.mark_item(file, True)
+
+        self.ui.browser.main_column.request_redraw()
 
     def delete(self, files=None):
         # XXX: warn when deleting mount points/unseen marked files?
