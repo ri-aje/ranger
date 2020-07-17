@@ -146,7 +146,14 @@ class CopyLoader(Loadable, FileManagerAware):  # pylint: disable=too-many-instan
                         yield
                     done += n
         cwd = self.fm.get_directory(self.original_path)
-        cwd.load_content()
+
+        # when pasting only one file, automatically select it.
+        if len(self.name_pairs) == 1:
+            cwd.load_content(False)
+            src, dst = self.name_pairs[0]
+            self.fm.select_file(dst)
+        else:
+            cwd.load_content()
 
 
 class CommandLoader(  # pylint: disable=too-many-instance-attributes
