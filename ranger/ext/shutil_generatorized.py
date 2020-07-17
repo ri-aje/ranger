@@ -137,7 +137,7 @@ def copyfile(src, dst):
                 yield done
 
 
-def copy2(src, dst, overwrite=False, symlinks=False, make_safe_path=get_safe_path):
+def copy2(src, dst, overwrite=False, symlinks=False, make_safe_path=get_safe_path, name_pairs=[]):
     """Copy data and all stat info ("cp -p src dst").
 
     The destination may be a directory.
@@ -147,6 +147,7 @@ def copy2(src, dst, overwrite=False, symlinks=False, make_safe_path=get_safe_pat
         dst = os.path.join(dst, os.path.basename(src))
     if not overwrite:
         dst = make_safe_path(dst)
+    name_pairs.append((src, dst))
     if symlinks and os.path.islink(src):
         linkto = os.readlink(src)
         if overwrite and os.path.lexists(dst):
@@ -159,7 +160,7 @@ def copy2(src, dst, overwrite=False, symlinks=False, make_safe_path=get_safe_pat
 
 
 def copytree(src, dst,  # pylint: disable=too-many-locals,too-many-branches
-             symlinks=False, ignore=None, overwrite=False, make_safe_path=get_safe_path):
+             symlinks=False, ignore=None, overwrite=False, make_safe_path=get_safe_path, name_pairs=[]):
     """Recursively copy a directory tree using copy2().
 
     The destination directory must not already exist.
@@ -193,10 +194,12 @@ def copytree(src, dst,  # pylint: disable=too-many-locals,too-many-branches
 
     try:
         os.makedirs(dst)
+        name_pairs.append((src, dst))
     except OSError:
         if not overwrite:
             dst = make_safe_path(dst)
             os.makedirs(dst)
+            name_pairs.append((src, dst))
     errors = []
     done = 0
     for name in names:
@@ -242,7 +245,7 @@ def copytree(src, dst,  # pylint: disable=too-many-locals,too-many-branches
         raise Error(errors)
 
 
-def move(src, dst, overwrite=False, make_safe_path=get_safe_path):
+def move(src, dst, overwrite=False, make_safe_path=get_safe_path, name_pairs=[]):
     """Recursively move a file or directory to another location. This is
     similar to the Unix "mv" command.
 
@@ -265,6 +268,7 @@ def move(src, dst, overwrite=False, make_safe_path=get_safe_path):
             # We might be on a case insensitive filesystem,
             # perform the rename anyway.
             os.rename(src, dst)
+            name_pairs.append((src,dst))
             return
 
         real_dst = os.path.join(dst, _basename(src))
@@ -272,6 +276,7 @@ def move(src, dst, overwrite=False, make_safe_path=get_safe_path):
         real_dst = make_safe_path(real_dst)
     try:
         os.rename(src, real_dst)
+        name_pairs.append((src, real_dst))
     except OSError:
         if os.path.isdir(src):
             if _destinsrc(src, dst):
@@ -280,8 +285,10 @@ def move(src, dst, overwrite=False, make_safe_path=get_safe_path):
                                  make_safe_path=make_safe_path):
                 yield done
             rmtree(src)
+            name_pairs.append((src, real_dst))
         else:
             for done in copy2(src, real_dst, symlinks=True, overwrite=overwrite,
                               make_safe_path=make_safe_path):
                 yield done
             os.unlink(src)
+            name_pairs.append((src, real_dst))

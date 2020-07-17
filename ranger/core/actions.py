@@ -1599,9 +1599,10 @@ class Actions(  # pylint: disable=too-many-instance-attributes,too-many-public-m
         """
         if dest is None:
             dest = self.thistab.path
+        self.name_pairs = []
         if isdir(dest):
             loadable = CopyLoader(self.copy_buffer, self.do_cut, overwrite,
-                                  dest, make_safe_path)
+                                  dest, make_safe_path, self.name_pairs)
             self.loader.add(loadable, append=append)
             self.do_cut = False
         else:
