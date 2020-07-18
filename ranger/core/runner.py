@@ -263,6 +263,6 @@ class Runner(object):  # pylint: disable=too-few-public-methods
             if toggle_ui:
                 self._activate_ui(True)
             if pipe_output and process:
-                return self(action='vim -', app='pager',  # pylint: disable=lost-exception
+                return self(action='vim --cmd "noremap qq :q!" -', app='pager',  # pylint: disable=lost-exception
                             try_app_first=True, stdin=process.stdout)
             return process  # pylint: disable=lost-exception
