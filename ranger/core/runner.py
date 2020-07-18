@@ -248,8 +248,8 @@ class Runner(object):  # pylint: disable=too-few-public-methods
                     if platform.system() == 'Darwin':
                         if wait_for_enter:
                             if popen_kws['stdout'] is sys.stdout:
-                                    stdout_position = sys.stdout.tell()
-                                    stderr_position = sys.stderr.tell()
+                                stdout_position = sys.stdout.tell()
+                                stderr_position = sys.stderr.tell()
                     process = Popen(**popen_kws)
             except OSError as ex:
                 error = ex
@@ -262,8 +262,8 @@ class Runner(object):  # pylint: disable=too-few-public-methods
                 if platform.system() == 'Darwin':
                     if wait_for_enter:
                         if popen_kws['stdout'] is sys.stdout:
-                                if stdout_position != sys.stdout.tell() or stderr_position != sys.stderr.tell():
-                                        press_enter()
+                            if stdout_position != sys.stdout.tell() or stderr_position != sys.stderr.tell():
+                                press_enter()
                 else:
                     if wait_for_enter:
                         press_enter()
