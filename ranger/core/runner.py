@@ -27,6 +27,7 @@ from __future__ import (absolute_import, division, print_function)
 import logging
 import os
 import sys
+from datetime import datetime
 from subprocess import Popen, PIPE, STDOUT
 from ranger.ext.get_executables import get_executables, get_term
 from ranger.ext.popen_forked import Popen_forked
@@ -242,6 +243,7 @@ class Runner(object):  # pylint: disable=too-few-public-methods
                     # supported, but we assume it is, since curses is used.
                     Popen_forked(**popen_kws)
                 else:
+                    print('[{}]:> {}'.format(datetime.now().strftime('%Y/%m/%d.%H:%M:%S'), action))
                     process = Popen(**popen_kws)
             except OSError as ex:
                 error = ex
