@@ -260,11 +260,10 @@ class Runner(object):  # pylint: disable=too-few-public-methods
                     self.zombies.add(process)
                 if platform.system() == 'Darwin':
                     if wait_for_enter and popen_kws['stdout'] is sys.stdout:
-                        if stdout_position != sys.stdout.tell() or stderr_position != sys.stderr.tell():
-                            press_enter()
-                else:
-                    if wait_for_enter:
-                        press_enter()
+                        if stdout_position == sys.stdout.tell() and stderr_position == sys.stderr.tell():
+                            wait_for_enter = False
+                if wait_for_enter:
+                    press_enter()
         finally:
             self.fm.signal_emit('runner.execute.after',
                                 popen_kws=popen_kws, context=context, error=error)
