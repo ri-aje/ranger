@@ -246,10 +246,9 @@ class Runner(object):  # pylint: disable=too-few-public-methods
                 else:
                     print('[{}]:> {}'.format(datetime.now().strftime('%Y/%m/%d.%H:%M:%S'), action))
                     if platform.system() == 'Darwin':
-                        if wait_for_enter:
-                            if popen_kws['stdout'] is sys.stdout:
-                                stdout_position = sys.stdout.tell()
-                                stderr_position = sys.stderr.tell()
+                        if wait_for_enter and popen_kws['stdout'] is sys.stdout:
+                            stdout_position = sys.stdout.tell()
+                            stderr_position = sys.stderr.tell()
                     process = Popen(**popen_kws)
             except OSError as ex:
                 error = ex
@@ -260,10 +259,9 @@ class Runner(object):  # pylint: disable=too-few-public-methods
                 elif process:
                     self.zombies.add(process)
                 if platform.system() == 'Darwin':
-                    if wait_for_enter:
-                        if popen_kws['stdout'] is sys.stdout:
-                            if stdout_position != sys.stdout.tell() or stderr_position != sys.stderr.tell():
-                                press_enter()
+                    if wait_for_enter and popen_kws['stdout'] is sys.stdout:
+                        if stdout_position != sys.stdout.tell() or stderr_position != sys.stderr.tell():
+                            press_enter()
                 else:
                     if wait_for_enter:
                         press_enter()
