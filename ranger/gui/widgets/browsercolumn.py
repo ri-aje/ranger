@@ -330,6 +330,11 @@ class BrowserColumn(Pager):  # pylint: disable=too-many-instance-attributes
             if drawn.marked and (self.main_column
                                  or self.settings.display_tags_in_all_columns):
                 text = " " + text
+            # further indent for copied/cut items.
+            # key[4] == drawn.path in copied. avoid recalculation.
+            if key[4] and (self.main_column
+                           or self.settings.display_tags_in_all_columns):
+                text = " " + text
 
             # Computing predisplay data. predisplay contains a list of lists
             # [string, colorlst] where string is a piece of string to display,
