@@ -245,11 +245,11 @@ class Runner(object):  # pylint: disable=too-few-public-methods
                     Popen_forked(**popen_kws)
                 else:
                     print('[{}]:> {}'.format(datetime.now().strftime('%Y/%m/%d.%H:%M:%S'), action))
-                    if wait_for_enter:
-                        if popen_kws['stdout'] is sys.stdout:
-                            if platform.system() == 'Darwin':
-                                stdout_position = sys.stdout.tell()
-                                stderr_position = sys.stderr.tell()
+                    if platform.system() == 'Darwin':
+                        if wait_for_enter:
+                            if popen_kws['stdout'] is sys.stdout:
+                                    stdout_position = sys.stdout.tell()
+                                    stderr_position = sys.stderr.tell()
                     process = Popen(**popen_kws)
             except OSError as ex:
                 error = ex
@@ -259,11 +259,14 @@ class Runner(object):  # pylint: disable=too-few-public-methods
                     process.wait()
                 elif process:
                     self.zombies.add(process)
-                if wait_for_enter:
-                    if popen_kws['stdout'] is sys.stdout:
-                        if platform.system() == 'Darwin':
-                            if stdout_position != sys.stdout.tell() or stderr_position != sys.stderr.tell():
-                                    press_enter()
+                if platform.system() == 'Darwin':
+                    if wait_for_enter:
+                        if popen_kws['stdout'] is sys.stdout:
+                                if stdout_position != sys.stdout.tell() or stderr_position != sys.stderr.tell():
+                                        press_enter()
+                else:
+                    if wait_for_enter:
+                        press_enter()
         finally:
             self.fm.signal_emit('runner.execute.after',
                                 popen_kws=popen_kws, context=context, error=error)
