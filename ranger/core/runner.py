@@ -26,6 +26,7 @@ from __future__ import (absolute_import, division, print_function)
 
 import logging
 import os
+import platform
 import sys
 from datetime import datetime
 from subprocess import Popen, PIPE, STDOUT
@@ -244,6 +245,11 @@ class Runner(object):  # pylint: disable=too-few-public-methods
                     Popen_forked(**popen_kws)
                 else:
                     print('[{}]:> {}'.format(datetime.now().strftime('%Y/%m/%d.%H:%M:%S'), action))
+                    if wait_for_enter:
+                        if popen_kws['stdout'] is sys.stdout:
+                            if platform.system() == 'Darwin':
+                                stdout_position = sys.stdout.tell()
+                                stderr_position = sys.stderr.tell()
                     process = Popen(**popen_kws)
             except OSError as ex:
                 error = ex
@@ -254,7 +260,10 @@ class Runner(object):  # pylint: disable=too-few-public-methods
                 elif process:
                     self.zombies.add(process)
                 if wait_for_enter:
-                    press_enter()
+                    if popen_kws['stdout'] is sys.stdout:
+                        if platform.system() == 'Darwin':
+                            if stdout_position != sys.stdout.tell() or stderr_position != sys.stderr.tell():
+                                    press_enter()
         finally:
             self.fm.signal_emit('runner.execute.after',
                                 popen_kws=popen_kws, context=context, error=error)
