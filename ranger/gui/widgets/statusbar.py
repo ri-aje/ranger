@@ -175,7 +175,8 @@ class StatusBar(Widget):  # pylint: disable=too-many-instance-attributes
                 dest = readlink(target.path)
             except OSError:
                 dest = '?'
-            left.add(' -> ' + dest, 'link', how)
+            left.add_space()
+            left.add(target.basename + ' -> ' + dest, 'link', how)
         else:
             left.add_space()
 
@@ -188,6 +189,9 @@ class StatusBar(Widget):  # pylint: disable=too-many-instance-attributes
             except OSError:
                 date = '?'
             left.add(date, 'mtime')
+
+            left.add_space()
+            left.add(target.basename)
 
         directory = target if target.is_directory else \
             target.fm.get_directory(os.path.dirname(target.path))
