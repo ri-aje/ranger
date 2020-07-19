@@ -33,7 +33,7 @@ from ranger.ext.next_available_filename import next_available_filename
 from ranger.ext.relative_symlink import relative_symlink
 from ranger.ext.rifle import squash_flags, ASK_COMMAND
 from ranger.ext.safe_path import get_safe_path
-from ranger.ext.shell_escape import shell_quote
+from ranger.ext.shell_escape import shell_quote, shell_escape
 
 LOG = getLogger(__name__)
 
@@ -1580,8 +1580,20 @@ class Actions(  # pylint: disable=too-many-instance-attributes,too-many-public-m
         else:
             self.notify('Failed to paste. The destination is invalid.', bad=True)
 
-    def mark_paste(self):
-        """:mark_paste
+    def dump_last_paste(self):
+        temporary_file = tempfile.NamedTemporaryFile()
+
+        def write(string):  # pylint: disable=redefined-outer-name
+            temporary_file.write(string.encode('utf-8'))
+
+        for src, dst in self.name_pairs:
+            write('{}\t{}\n'.format(shell_escape(src), shell_escape(dst)))
+
+        temporary_file.flush()
+        self._run_pager(temporary_file.name)
+
+    def mark_last_paste(self):
+        """:mark_last_paste
 
         Mark the last pasted items in the current directory.
         """
