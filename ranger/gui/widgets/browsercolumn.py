@@ -327,18 +327,21 @@ class BrowserColumn(Pager):  # pylint: disable=too-many-instance-attributes
 
             text = current_linemode.filetitle(drawn, metadata)
 
-            # key[4] == drawn.path in copied. avoid recalculation.
-            if key[4] and (self.main_column
-                           or self.settings.display_tags_in_all_columns):
-                # mark a copied/cut item with a cross mark.
-                if self.fm.do_cut:
-                    text = u'\uf0c4 ' + text
+            if self.main_column or self.settings.display_tags_in_all_columns:
+                # key[4] == drawn.path in copied. avoid recalculation.
+                if key[4]:
+                    # mark a copied/cut item with a cross mark.
+                    if self.fm.do_cut:
+                        text = u'\uf0c4 ' + text
+                    else:
+                        text = u'\uf0c5 ' + text
                 else:
-                    text = u'\uf0c5 ' + text
-            if drawn.marked and (self.main_column
-                                 or self.settings.display_tags_in_all_columns):
-                # mark a marked item with a check mark.
-                text = u'\uf00c ' + text
+                    text = '  ' + text
+                if drawn.marked:
+                    # mark a marked item with a check mark.
+                    text = u'\uf00c ' + text
+                else:
+                    text = '  ' + text
 
             # Computing predisplay data. predisplay contains a list of lists
             # [string, colorlst] where string is a piece of string to display,
