@@ -340,9 +340,15 @@ class BrowserColumn(Pager):  # pylint: disable=too-many-instance-attributes
                            or self.settings.display_tags_in_all_columns):
                 # mark a copied/cut item with a cross mark.
                 if self.islinux:
-                    text = u'\u274e ' + text
+                    if self.fm.do_cut:
+                        text = u'\u274e ' + text
+                    else:
+                        text = u'\u2398 ' + text
                 elif self.isosx:
-                    text = u'\u2718 ' + text
+                    if self.fm.do_cut:
+                        text = u'\u2718 ' + text
+                    else:
+                        text = u'\u2398 ' + text
                 else:
                     text = ' ' + text
 
