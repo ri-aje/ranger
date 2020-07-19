@@ -330,18 +330,19 @@ class BrowserColumn(Pager):  # pylint: disable=too-many-instance-attributes
             if self.main_column or self.settings.display_tags_in_all_columns:
                 if self.settings.mark_file_status:
                     if drawn.marked:
-                        # mark a marked item with a check mark.
+                        # mark a marked item with a check symbol.
                         text = u'\uf00c ' + text
                     else:
                         text = '  ' + text
                     # key[4] == drawn.path in copied. avoid recalculation.
                     if key[4]:
                         if self.settings.mark_file_status:
-                            # mark a copied/cut item with a cross mark.
                             if self.fm.do_cut:
-                                text = u'\uf0c4 ' + text
+                                # mark a copied item with a scissor symbol.
+                                text = u'\uf68f ' + text
                             else:
-                                text = u'\uf0c5 ' + text
+                                # mark a copied item with a copy symbol.
+                                text = u'\uf690 ' + text
                     else:
                         text = '  ' + text
                 else:
