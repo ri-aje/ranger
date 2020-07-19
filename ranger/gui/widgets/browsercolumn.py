@@ -7,6 +7,7 @@ from __future__ import (absolute_import, division, print_function)
 
 import curses
 import stat
+import platform
 from time import time
 from os.path import splitext
 
@@ -59,6 +60,9 @@ class BrowserColumn(Pager):  # pylint: disable=too-many-instance-attributes
 
         self.settings.signal_bind('setopt.display_size_in_main_column',
                                   self.request_redraw, weak=True)
+
+        self.islinux = platform.system() == 'Linux'
+        self.isosx = platform.system() == 'Darwin'
 
     def request_redraw(self):
         self.need_redraw = True
@@ -335,7 +339,12 @@ class BrowserColumn(Pager):  # pylint: disable=too-many-instance-attributes
             if key[4] and (self.main_column
                            or self.settings.display_tags_in_all_columns):
                 # mark a copied/cut item with a cross mark.
-                text = u'\u2718 ' + text
+                if self.islinux:
+                    text = u'\u274e ' + text
+                elif self.isosx:
+                    text = u'\u2718 ' + text
+                else:
+                    text = ' ' + text
 
             # Computing predisplay data. predisplay contains a list of lists
             # [string, colorlst] where string is a piece of string to display,
