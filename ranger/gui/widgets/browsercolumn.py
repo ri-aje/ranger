@@ -335,7 +335,7 @@ class BrowserColumn(Pager):  # pylint: disable=too-many-instance-attributes
             if key[4] and (self.main_column
                            or self.settings.display_tags_in_all_columns):
                 # mark a copied/cut item with a cross mark.
-                text = u'\u274e ' + text
+                text = u'\u2718 ' + text
 
             # Computing predisplay data. predisplay contains a list of lists
             # [string, colorlst] where string is a piece of string to display,
