@@ -54,6 +54,7 @@ ALLOWED_SETTINGS = {
     'iterm2_font_width': int,
     'iterm2_font_height': int,
     'line_numbers': str,
+    'mark_file_status': bool,
     'max_console_history_size': (int, type(None)),
     'max_history_size': (int, type(None)),
     'metadata_deep_search': bool,
