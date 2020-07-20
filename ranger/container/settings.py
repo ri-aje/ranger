@@ -5,6 +5,7 @@ from __future__ import (absolute_import, division, print_function)
 
 import re
 import os.path
+from sortedcontainers import SortedDict
 from inspect import isfunction
 
 import ranger
@@ -137,7 +138,7 @@ class Settings(SignalDispatcher, FileManagerAware):
     def __init__(self):
         SignalDispatcher.__init__(self)
         self.__dict__['_localsettings'] = dict()
-        self.__dict__['_localregexes'] = dict()
+        self.__dict__['_localregexes'] = SortedDict()
         self.__dict__['_tagsettings'] = dict()
         self.__dict__['_settings'] = dict()
         for name in ALLOWED_SETTINGS:
@@ -217,7 +218,7 @@ class Settings(SignalDispatcher, FileManagerAware):
                 localpath = None
 
         if localpath:
-            for pattern, regex in self._localregexes.items():
+            for pattern, regex in reversed(self._localregexes.items()):
                 if name in self._localsettings[pattern] and\
                         regex.search(localpath):
                     return self._localsettings[pattern][name]
