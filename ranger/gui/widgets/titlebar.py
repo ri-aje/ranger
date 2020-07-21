@@ -137,11 +137,15 @@ class TitleBar(Widget):
     def _get_tab_text(self, tabname):
         result = ' ' + str(tabname)
         if self.settings.dirname_in_tabs:
-            dirname = basename(self.fm.tabs[tabname].path)
+            paths = self.fm.tabs[tabname].path.split('/')
+            if len(paths) > 7:
+                dirname = self.ellipsis[self.settings.unicode_ellipsis] + '/'.join(paths[-6:])
+            else:
+                dirname = '/'.join(paths)
             if not dirname:
                 result += ":/"
-            elif len(dirname) > 15:
-                result += ":" + dirname[:14] + self.ellipsis[self.settings.unicode_ellipsis]
+            elif len(dirname) > 30:
+                result += ":" + dirname[:30] + self.ellipsis[self.settings.unicode_ellipsis]
             else:
                 result += ":" + dirname
         return result
