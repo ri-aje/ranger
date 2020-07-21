@@ -142,6 +142,10 @@ class TitleBar(Widget):
                 dirname = self.ellipsis[self.settings.unicode_ellipsis] + '/'.join(paths[-6:])
             else:
                 dirname = '/'.join(paths)
+            if self.settings.tilde_in_titlebar \
+                    and (dirname.startswith(self.fm.home_path + "/")
+                         or dirname == self.fm.home_path):
+                dirname = '~/' + dirname[len(self.fm.home_path) + 1:]
             if not dirname:
                 result += ":/"
             elif len(dirname) > 30:
