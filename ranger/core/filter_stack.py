@@ -49,7 +49,10 @@ def filter_combinator(combinator_name):
 class NameFilter(BaseFilter):
     def __init__(self, pattern):
         self.pattern = pattern
-        self.regex = re.compile(pattern)
+        options = re.UNICODE
+        if pattern.islower():
+            options |= re.IGNORECASE
+        self.regex = re.compile(pattern, options)
 
     def __call__(self, fobj):
         return self.regex.search(fobj.relative_path)
@@ -62,7 +65,10 @@ class NameFilter(BaseFilter):
 class MimeFilter(BaseFilter):
     def __init__(self, pattern):
         self.pattern = pattern
-        self.regex = re.compile(pattern)
+        options = re.UNICODE
+        if pattern.islower():
+            options |= re.IGNORECASE
+        self.regex = re.compile(pattern, options)
 
     def __call__(self, fobj):
         mimetype, _ = mimetypes.guess_type(fobj.relative_path)
