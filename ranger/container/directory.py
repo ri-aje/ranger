@@ -114,6 +114,7 @@ class Directory(  # pylint: disable=too-many-instance-attributes,too-many-public
     files_all = None
     filter = None
     temporary_filter = None
+    temporary_stack_filter = None
     narrow_filter = None
     inode_type_filter = None
     marked_items = None
@@ -300,6 +301,8 @@ class Directory(  # pylint: disable=too-many-instance-attributes,too-many-public
             temporary_filter_search = self.temporary_filter.search
             filters.append(lambda fobj: temporary_filter_search(fobj.basename))
         filters.extend(self.filter_stack)
+        if self.temporary_stack_filter:
+            filters.append(self.temporary_stack_filter)
 
         self.files = [f for f in self.files_all if accept_file(f, filters)]
 
