@@ -58,7 +58,7 @@ class NameFilter(BaseFilter):
         return self.regex.search(fobj.relative_path)
 
     def __str__(self):
-        return "<Filter: name =~ /{pat}/>".format(pat=self.pattern)
+        return "<name =~ /{pat}/>".format(pat=self.pattern)
 
 
 @stack_filter("mime")
@@ -77,7 +77,7 @@ class MimeFilter(BaseFilter):
         return self.regex.search(mimetype)
 
     def __str__(self):
-        return "<Filter: mimetype =~ /{pat}/>".format(pat=self.pattern)
+        return "<mimetype =~ /{pat}/>".format(pat=self.pattern)
 
 
 @stack_filter("hash")
@@ -103,7 +103,7 @@ class HashFilter(BaseFilter, FileManagerAware):
         return True
 
     def __str__(self):
-        return "<Filter: hash {fp}>".format(fp=self.filepath)
+        return "<hash {fp}>".format(fp=self.filepath)
 
 
 def group_by_hash(fsobjects):
@@ -147,7 +147,7 @@ class DuplicateFilter(BaseFilter, FileManagerAware):
         return fobj in self.duplicates
 
     def __str__(self):
-        return "<Filter: duplicate>"
+        return "<duplicate>"
 
     def get_duplicates(self):
         duplicates = set()
@@ -166,7 +166,7 @@ class UniqueFilter(BaseFilter, FileManagerAware):
         return fobj in self.unique
 
     def __str__(self):
-        return "<Filter: unique>"
+        return "<unique>"
 
     def get_unique(self):
         unique = set()
@@ -198,7 +198,7 @@ class TypeFilter(BaseFilter):
         return self.type_to_function[self.filetype](fobj)
 
     def __str__(self):
-        return "<Filter: type == '{ft}'>".format(ft=self.filetype)
+        return "<type == '{ft}'>".format(ft=self.filetype)
 
 
 @filter_combinator("or")
@@ -222,7 +222,7 @@ class OrFilter(BaseFilter):
         )
 
     def __str__(self):
-        return "<Filter: {comp}>".format(
+        return "<{comp}>".format(
             comp=" or ".join(map(str, self.subfilters)))
 
     def decompose(self):
@@ -243,7 +243,7 @@ class AndFilter(BaseFilter):
         return accept_file(fobj, self.subfilters)
 
     def __str__(self):
-        return "<Filter: {comp}>".format(
+        return "<{comp}>".format(
             comp=" and ".join(map(str, self.subfilters)))
 
     def decompose(self):
@@ -260,7 +260,7 @@ class NotFilter(BaseFilter):
         return not self.subfilter(fobj)
 
     def __str__(self):
-        return "<Filter: not {exp}>".format(exp=str(self.subfilter))
+        return "<not {exp}>".format(exp=str(self.subfilter))
 
     def decompose(self):
         return [self.subfilter]
