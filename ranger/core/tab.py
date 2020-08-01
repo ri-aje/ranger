@@ -71,6 +71,9 @@ class Tab(FileManagerAware, SettingsAware):  # pylint: disable=too-many-instance
         self._pointer = value
         if self._pointer < len(self.thisdir.files):
             self._pointed_obj = self.thisdir.files[self._pointer]
+        else:
+            self._pointer = 0
+            self._pointed_obj = None
 
     pointer = property(_get_pointer, _set_pointer)
 
