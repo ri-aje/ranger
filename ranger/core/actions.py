@@ -708,7 +708,7 @@ class Actions(  # pylint: disable=too-many-instance-attributes,too-many-public-m
             self.settings['sort'] = str(func)
 
     def mark_files(self, all=False,  # pylint: disable=redefined-builtin,too-many-arguments
-                   toggle=False, val=None, movedown=None, narg=None):
+                   toggle=False, val=None, movedown=0, narg=None):
         """A wrapper for the directory.mark_xyz functions.
 
         Arguments:
@@ -725,8 +725,9 @@ class Actions(  # pylint: disable=too-many-instance-attributes,too-many-public-m
         if not cwd.accessible:
             return
 
-        if movedown is None:
-            movedown = not all
+        if movedown == 0:
+            if not all:
+                movedown = 1
 
         if val is None and toggle is False:
             return
@@ -752,8 +753,10 @@ class Actions(  # pylint: disable=too-many-instance-attributes,too-many-public-m
                     else:
                         cwd.mark_item(item, val)
 
-        if movedown:
+        if movedown > 0:
             self.move(down=narg)
+        if movedown < 0:
+            self.move(up=narg)
 
         self.ui.redraw_main_column()
         self.ui.status.need_redraw = True
