@@ -745,13 +745,22 @@ class Actions(  # pylint: disable=too-many-instance-attributes,too-many-public-m
             if self.mode == 'visual':
                 self.change_mode('normal')
         else:
-            for i in range(cwd.pointer, min(cwd.pointer + narg, len(cwd))):
-                item = cwd.files[i]
-                if item is not None:
-                    if toggle:
-                        cwd.toggle_mark(item)
-                    else:
-                        cwd.mark_item(item, val)
+            if movedown < 0:
+                for i in range(cwd.pointer, max(cwd.pointer - narg, -1), -1):
+                    item = cwd.files[i]
+                    if item is not None:
+                        if toggle:
+                            cwd.toggle_mark(item)
+                        else:
+                            cwd.mark_item(item, val)
+            else:
+                for i in range(cwd.pointer, min(cwd.pointer + narg, len(cwd))):
+                    item = cwd.files[i]
+                    if item is not None:
+                        if toggle:
+                            cwd.toggle_mark(item)
+                        else:
+                            cwd.mark_item(item, val)
 
         if movedown > 0:
             self.move(down=narg)
