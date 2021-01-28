@@ -63,7 +63,7 @@ class Tab(FileManagerAware, SettingsAware):  # pylint: disable=too-many-instance
                 try:
                     self._pointer = self.thisdir.files.index(self._pointed_obj)
                 except ValueError:
-                    self._pointed_obj = self.thisdir.files[self._pointer]
+                    self._set_pointer(self._pointer)
         except (TypeError, IndexError):
             self._pointer = 0
             self._pointed_obj = None
