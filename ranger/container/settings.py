@@ -146,6 +146,8 @@ class Settings(SignalDispatcher, FileManagerAware):
         except ModuleNotFoundError:
             self.__dict__['_localregexes'] = dict()
             self.__dict__['_localregexes_is_sorteddict'] = False
+            # cannot use self.fm.notify. it results in infinite recursion.
+            print("_localregexes is not sorted container.")
 
         self.__dict__['_tagsettings'] = dict()
         self.__dict__['_settings'] = dict()
