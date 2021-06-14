@@ -101,6 +101,8 @@ ALLOWED_SETTINGS = {
     'wrap_plaintext_previews': bool,
     'wrap_scroll': bool,
     'xterm_alt_key': bool,
+
+    'auto_select': bool,
 }
 
 ALLOWED_VALUES = {
