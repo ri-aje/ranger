@@ -103,6 +103,7 @@ ALLOWED_SETTINGS = {
     'xterm_alt_key': bool,
 
     'auto_select': bool,
+    'sync_filter': bool,
 }
 
 ALLOWED_VALUES = {

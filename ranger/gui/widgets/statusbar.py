@@ -291,6 +291,9 @@ class StatusBar(Widget):  # pylint: disable=too-many-instance-attributes
         if self.settings.auto_select:
             right.add('autoselect, ', "space")
 
+        if self.settings.sync_filter:
+            right.add('syncfilter, ', "space")
+
         if target.marked_items:
             if len(target.marked_items) == target.size:
                 right.add(human_readable(target.disk_usage, separator=''))
