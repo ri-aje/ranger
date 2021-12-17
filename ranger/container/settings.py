@@ -140,20 +140,18 @@ class Settings(SignalDispatcher, FileManagerAware):
 
     def __init__(self):
         SignalDispatcher.__init__(self)
-        self.__dict__['_localsettings'] = dict()
-
+        self.__dict__['_localsettings'] = {}
+        self.__dict__['_localregexes'] = {}
         try:
+            self.__dict__['_localregexes_is_sorteddict'] = False
             from sortedcontainers import SortedDict
             self.__dict__['_localregexes'] = SortedDict()
             self.__dict__['_localregexes_is_sorteddict'] = True
         except ModuleNotFoundError:
-            self.__dict__['_localregexes'] = dict()
-            self.__dict__['_localregexes_is_sorteddict'] = False
             # cannot use self.fm.notify. it results in infinite recursion.
             print("_localregexes is not sorted container.")
-
-        self.__dict__['_tagsettings'] = dict()
-        self.__dict__['_settings'] = dict()
+        self.__dict__['_tagsettings'] = {}
+        self.__dict__['_settings'] = {}
         for name in ALLOWED_SETTINGS:
             self.signal_bind('setopt.' + name, self._sanitize,
                              priority=SIGNAL_PRIORITY_SANITIZE)
@@ -301,11 +299,11 @@ class Settings(SignalDispatcher, FileManagerAware):
         if path:
             if path not in self._localsettings:
                 try:
-                    regex = re.compile(re.escape(path))
+                    regex = re.compile(path)
                 except re.error:  # Bad regular expression
                     return
                 self._localregexes[path] = regex
-                self._localsettings[path] = dict()
+                self._localsettings[path] = {}
             self._localsettings[path][name] = value
 
             # make sure name is in _settings, so __iter__ runs through
@@ -317,7 +315,7 @@ class Settings(SignalDispatcher, FileManagerAware):
         elif tags:
             for tag in tags:
                 if tag not in self._tagsettings:
-                    self._tagsettings[tag] = dict()
+                    self._tagsettings[tag] = {}
                 self._tagsettings[tag][name] = value
         else:
             self._settings[name] = value

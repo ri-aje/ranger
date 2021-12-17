@@ -29,7 +29,9 @@ import os
 import platform
 import sys
 from datetime import datetime
+from io import open
 from subprocess import Popen, PIPE, STDOUT
+
 from ranger.ext.get_executables import get_executables, get_term
 from ranger.ext.popen_forked import Popen_forked
 
@@ -192,8 +194,10 @@ class Runner(object):  # pylint: disable=too-few-public-methods
             pipe_output = True
             context.wait = False
         if 's' in context.flags:
-            devnull_writable = open(os.devnull, 'w')
-            devnull_readable = open(os.devnull, 'r')
+            # Using a with-statement for these is inconvenient.
+            # pylint: disable=consider-using-with
+            devnull_writable = open(os.devnull, 'w', encoding="utf-8")
+            devnull_readable = open(os.devnull, 'r', encoding="utf-8")
             for key in ('stdout', 'stderr'):
                 popen_kws[key] = devnull_writable
             toggle_ui = False
@@ -242,6 +246,7 @@ class Runner(object):  # pylint: disable=too-few-public-methods
                 if 'f' in context.flags and 'r' not in context.flags:
                     # This can fail and return False if os.fork() is not
                     # supported, but we assume it is, since curses is used.
+                    # pylint: disable=consider-using-with
                     Popen_forked(**popen_kws)
                 else:
                     print('[{}]:> {}'.format(datetime.now().strftime('%Y/%m/%d.%H:%M:%S'), action))
