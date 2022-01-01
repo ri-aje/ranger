@@ -294,11 +294,11 @@ handle_mime() {
             pandoc -s -t markdown -- "${FILE_PATH}" && exit 5
             exit 1;;
 
-	## E-mails
-	message/rfc822)
-	    ## Parsing performed by mu: https://github.com/djcb/mu
-	    mu view -- "${FILE_PATH}" && exit 5
-	    exit 1;;
+        ## E-mails
+        message/rfc822)
+            ## Parsing performed by mu: https://github.com/djcb/mu
+            mu view -- "${FILE_PATH}" && exit 5
+            exit 1;;
 
         ## XLS
         *ms-excel)
@@ -324,7 +324,7 @@ handle_mime() {
             env HIGHLIGHT_OPTIONS="${HIGHLIGHT_OPTIONS}" highlight \
                 --out-format="${highlight_format}" \
                 --force -- "${FILE_PATH}" && exit 5
-            env COLORTERM=8bit bat --color=always --style="plain" \
+            env COLORTERM=8bit bat --color=always --theme=GitHub --style="plain" \
                 -- "${FILE_PATH}" && exit 5
             pygmentize -f "${pygmentize_format}" -O "style=${PYGMENTIZE_STYLE}"\
                 -- "${FILE_PATH}" && exit 5
@@ -349,7 +349,7 @@ handle_mime() {
             mediainfo "${FILE_PATH}" && exit 5
             exiftool "${FILE_PATH}" && exit 5
             exit 1;;
-            
+
         ## ELF files (executables and shared objects)
         application/x-executable | application/x-pie-executable | application/x-sharedlib)
             readelf -WCa "${FILE_PATH}" && exit 5
