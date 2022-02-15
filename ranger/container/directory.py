@@ -296,10 +296,10 @@ class Directory(  # pylint: disable=too-many-instance-attributes,too-many-public
             filters.append(inode_filter_func)
         if self.filter:
             filter_search = self.filter.search
-            filters.append(lambda fobj: filter_search(fobj.relative_path) or (fobj.pinyinname and filter_search(fobj.pinyinname)))
+            filters.append(lambda fobj: filter_search(fobj.relative_path) or (self.settings.pinyin_matching and fobj.pinyinname and filter_search(fobj.pinyinname)))
         if self.temporary_filter:
             temporary_filter_search = self.temporary_filter.search
-            filters.append(lambda fobj: temporary_filter_search(fobj.basename) or (fobj.pinyinname and temporary_filter_search(fobj.pinyinname)))
+            filters.append(lambda fobj: temporary_filter_search(fobj.basename) or (self.settings.pinyin_matching and fobj.pinyinname and temporary_filter_search(fobj.pinyinname)))
         filters.extend(self.filter_stack)
         if self.temporary_stack_filter:
             filters.append(self.temporary_stack_filter)

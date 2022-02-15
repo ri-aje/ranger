@@ -104,6 +104,7 @@ ALLOWED_SETTINGS = {
 
     'auto_select': bool,
     'sync_filter': bool,
+    'pinyin_matching': bool,
 }
 
 ALLOWED_VALUES = {
