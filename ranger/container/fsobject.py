@@ -44,6 +44,7 @@ BAD_INFO = '?'
 _UNSAFE_CHARS = '\n' + ''.join(map(chr, range(32))) + ''.join(map(chr, range(128, 256)))
 _SAFE_STRING_TABLE = maketrans(_UNSAFE_CHARS, '?' * len(_UNSAFE_CHARS))
 _EXTRACT_NUMBER_RE = re.compile(r'(\d+|\D)')
+_CN_CHARS = re.compile(r'[一-龥]+')
 
 
 def safe_path(path):
@@ -53,6 +54,7 @@ def safe_path(path):
 class FileSystemObject(  # pylint: disable=too-many-instance-attributes,too-many-public-methods
         FileManagerAware, SettingsAware):
     basename = None
+    pinyinname = None
     relative_path = None
     infostring = None
     path = None
@@ -98,11 +100,34 @@ class FileSystemObject(  # pylint: disable=too-many-instance-attributes,too-many
          SizeHumanReadableMtimeLinemode]
     )
 
+    def _get_pinyin (self, filename):
+        try:
+            import pinyin
+            pinyinname = []
+            index = 0
+            while index < len(filename):
+                match = _CN_CHARS.search(filename, index)
+                if match:
+                    start, end = match.span(0)
+                    pinyinname.append(filename[index:start].strip('.'))
+                    pinyinname.append(pinyin.get(filename[start:end], format='strip', delimiter='.'))
+                    index = end
+                else:
+                    pinyinname.append(filename[index:].strip('.'))
+                    index = len(filename)
+            return '.'.join(pinyinname)
+        except ImportError:
+            return None
+
     def __init__(self, path, preload=None, path_is_abs=False, basename_is_rel_to=None):
         if not path_is_abs:
             path = abspath(path)
         self.path = path
         self.basename = basename(path)
+
+        if _CN_CHARS.search(self.basename):
+            self.pinyinname = self._get_pinyin(self.basename)
+
         if basename_is_rel_to is None:
             self.relative_path = self.basename
         else:
