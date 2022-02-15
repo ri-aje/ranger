@@ -299,7 +299,7 @@ class Directory(  # pylint: disable=too-many-instance-attributes,too-many-public
             filters.append(lambda fobj: filter_search(fobj.relative_path))
         if self.temporary_filter:
             temporary_filter_search = self.temporary_filter.search
-            filters.append(lambda fobj: temporary_filter_search(fobj.basename) or temporary_filter_search(fobj.pinyinname))
+            filters.append(lambda fobj: temporary_filter_search(fobj.basename) or (fobj.pinyinname is not None and temporary_filter_search(fobj.pinyinname)))
         filters.extend(self.filter_stack)
         if self.temporary_stack_filter:
             filters.append(self.temporary_stack_filter)
