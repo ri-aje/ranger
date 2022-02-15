@@ -109,13 +109,13 @@ class FileSystemObject(  # pylint: disable=too-many-instance-attributes,too-many
                 match = _CN_CHARS.search(filename, index)
                 if match:
                     start, end = match.span(0)
-                    pinyinname.append(filename[index:start].strip('.'))
-                    pinyinname.append(pinyin.get(filename[start:end], format='strip', delimiter='.'))
+                    pinyinname.append(filename[index:start])
+                    pinyinname.append(' '+pinyin.get(filename[start:end], format='strip', delimiter=' ')+' ')
                     index = end
                 else:
-                    pinyinname.append(filename[index:].strip('.'))
+                    pinyinname.append(filename[index:])
                     index = len(filename)
-            return '.'.join(pinyinname)
+            return ''.join(pinyinname).strip()
         except ImportError:
             return None
 
