@@ -294,12 +294,35 @@ class Directory(  # pylint: disable=too-many-instance-attributes,too-many-public
                     return True
                 return False
             filters.append(inode_filter_func)
+
         if self.filter:
-            filter_search = self.filter.search
-            filters.append(lambda fobj: filter_search(fobj.relative_path) or (self.settings.pinyin_matching and fobj.pinyinname and filter_search(fobj.pinyinname)))
+            def filter_search(fobj):
+                filter_search = self.filter.search
+                if filter_search(fobj.relative_path):
+                    return True
+                if not self.settings.pinyin_matching:
+                    return False
+                if fobj.pinyinname and filter_search(fobj.pinyinname):
+                    return True
+                if fobj.pinyinname_nospace and filter_search(fobj.pinyinname_nospace):
+                    return True
+                return False
+            filters.append(filter_search)
+
         if self.temporary_filter:
-            temporary_filter_search = self.temporary_filter.search
-            filters.append(lambda fobj: temporary_filter_search(fobj.basename) or (self.settings.pinyin_matching and fobj.pinyinname and temporary_filter_search(fobj.pinyinname)))
+            def temporary_filter_search(fobj):
+                temporary_filter_search = self.temporary_filter.search
+                if temporary_filter_search(fobj.basename):
+                    return True
+                if not self.settings.pinyin_matching:
+                    return False
+                if fobj.pinyinname and temporary_filter_search(fobj.pinyinname):
+                    return True
+                if fobj.pinyinname_nospace and temporary_filter_search(fobj.pinyinname_nospace):
+                    return True
+                return False
+            filters.append(temporary_filter_search)
+
         filters.extend(self.filter_stack)
         if self.temporary_stack_filter:
             filters.append(self.temporary_stack_filter)

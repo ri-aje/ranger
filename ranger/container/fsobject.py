@@ -55,6 +55,7 @@ class FileSystemObject(  # pylint: disable=too-many-instance-attributes,too-many
         FileManagerAware, SettingsAware):
     basename = None
     pinyinname = None
+    pinyinname_nospace = None
     relative_path = None
     infostring = None
     path = None
@@ -100,7 +101,7 @@ class FileSystemObject(  # pylint: disable=too-many-instance-attributes,too-many
          SizeHumanReadableMtimeLinemode]
     )
 
-    def _get_pinyin (self, filename):
+    def _get_pinyin (self, filename, delimiter):
         try:
             import pinyin
             pinyinname = []
@@ -110,7 +111,7 @@ class FileSystemObject(  # pylint: disable=too-many-instance-attributes,too-many
                 if match:
                     start, end = match.span(0)
                     pinyinname.append(filename[index:start])
-                    pinyinname.append(' '+pinyin.get(filename[start:end], format='strip', delimiter=' ')+' ')
+                    pinyinname.append(' '+pinyin.get(filename[start:end], format='strip', delimiter=delimiter)+' ')
                     index = end
                 else:
                     pinyinname.append(filename[index:])
@@ -126,7 +127,8 @@ class FileSystemObject(  # pylint: disable=too-many-instance-attributes,too-many
         self.basename = basename(path)
 
         if _CN_CHARS.search(self.basename):
-            self.pinyinname = self._get_pinyin(self.basename)
+            self.pinyinname = self._get_pinyin(self.basename, delimiter=' ')
+            self.pinyinname_nospace = self._get_pinyin(self.basename, delimiter='')
 
         if basename_is_rel_to is None:
             self.relative_path = self.basename
