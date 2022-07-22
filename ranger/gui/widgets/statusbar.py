@@ -285,7 +285,7 @@ class StatusBar(Widget):  # pylint: disable=too-many-instance-attributes
 
         if self.fm.thisdir.filter_stack:
             right.add("fs=`", base, 'filter_stack')
-            right.add('*', base, 'filter_stack')
+            right.add(str(len(self.fm.thisdir.filter_stack)), base, 'filter_stack')
             right.add("', ", "space")
 
         if self.settings.auto_select:
