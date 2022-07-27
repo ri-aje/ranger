@@ -1676,7 +1676,6 @@ class Actions(  # pylint: disable=too-many-instance-attributes,too-many-public-m
         # COMPAT: old command.py use fm.delete() without arguments
         if files is None:
             files = (fobj.path for fobj in self.thistab.get_selection())
-        self.notify("Deleting {fls}!".format(fls=", ".join(files)))
         files = [os.path.abspath(path) for path in files]
         for path in files:
             # Untag the deleted files.
@@ -1696,6 +1695,9 @@ class Actions(  # pylint: disable=too-many-instance-attributes,too-many-public-m
                 except OSError as err:
                     self.notify(err)
         self.thistab.ensure_correct_pointer()
+        names = ', '.join(files)
+        size = 200
+        self.notify("deleted [{names}]".format(names = (names[:size] + '...') if len(names) > size else names))
 
     def mkdir(self, name):
         try:
