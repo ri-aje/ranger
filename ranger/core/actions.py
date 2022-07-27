@@ -1697,7 +1697,7 @@ class Actions(  # pylint: disable=too-many-instance-attributes,too-many-public-m
         self.thistab.ensure_correct_pointer()
         names = ', '.join(files)
         size = 200
-        self.notify("deleted {count} files [{names}]".format(count = len(names), names = (names[:size] + '...') if len(names) > size else names))
+        self.notify("deleted {count} files [{names}]".format(count = len(files), names = (names[:size] + '...') if len(names) > size else names))
 
     def mkdir(self, name):
         try:
