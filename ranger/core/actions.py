@@ -281,11 +281,18 @@ class Actions(  # pylint: disable=too-many-instance-attributes,too-many-public-m
         if additional:
             macros.update(additional)
         if escape:
+            unquoted_macros = {}
             for key, value in macros.items():
                 if isinstance(value, list):
                     macros[key] = " ".join(shell_quote(s) for s in value)
+                    if len(key) == 1:
+                        unquoted_macros['u'+key] = " ".join(value)
                 elif value != MACRO_FAIL:
                     macros[key] = shell_quote(value)
+                    if len(key) == 1:
+                        unquoted_macros['u'+key] = value
+            # always include unquoted version for simple macros.
+            macros.update(unquoted_macros)
         else:
             for key, value in macros.items():
                 if isinstance(value, list):
