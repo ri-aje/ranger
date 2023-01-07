@@ -325,7 +325,21 @@ class Directory(  # pylint: disable=too-many-instance-attributes,too-many-public
 
         filters.extend(self.filter_stack)
         if self.temporary_stack_filter:
-            filters.append(self.temporary_stack_filter)
+            def temporary_stack_filter_search(fobj):
+                temporary_stack_filter_search = self.temporary_stack_filter.regex.search
+                if temporary_stack_filter_search(fobj.basename):
+                    return True
+                if not self.settings.pinyin_matching:
+                    return False
+                from ranger.core.filter_stack import NameFilter
+                if not isinstance(self.temporary_stack_filter, NameFilter):
+                    return False
+                if fobj.pinyinname and temporary_stack_filter_search(fobj.pinyinname):
+                    return True
+                if fobj.pinyinname_nospace and temporary_stack_filter_search(fobj.pinyinname_nospace):
+                    return True
+                return False
+            filters.append(temporary_stack_filter_search)
 
         self.files = [f for f in self.files_all if accept_file(f, filters)]
 
