@@ -323,7 +323,28 @@ class Directory(  # pylint: disable=too-many-instance-attributes,too-many-public
                 return False
             filters.append(temporary_filter_search)
 
-        filters.extend(self.filter_stack)
+        if not self.settings.pinyin_matching: # no pinyin match, original behavior.
+            filters.extend(self.filter_stack)
+        else:
+            for stack_filter in self.filter_stack:
+                from ranger.core.filter_stack import NameFilter
+                if not isinstance(stack_filter, NameFilter):
+                    filters.append(stack_filter)
+                else:
+                    # for NameFilter, alter them to honor pinyin match.
+                    def stack_filter_search(fobj):
+                        stack_filter_search = stack_filter.regex.search
+                        if stack_filter_search(fobj.basename):
+                            return True
+                        # no need to check pinyin match setting, since control only reaches here
+                        # when pinyin matching is turned on globally.
+                        if fobj.pinyinname and stack_filter_search(fobj.pinyinname):
+                            return True
+                        if fobj.pinyinname_nospace and stack_filter_search(fobj.pinyinname_nospace):
+                            return True
+                        return False
+                    filters.append(stack_filter_search)
+
         if self.temporary_stack_filter:
             def temporary_stack_filter_search(fobj):
                 temporary_stack_filter_search = self.temporary_stack_filter.regex.search
