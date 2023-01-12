@@ -27,7 +27,6 @@ try:
 except AttributeError:
     from string import maketrans  # pylint: disable=no-name-in-module
 
-
 CONTAINER_EXTENSIONS = ('7z', 'ace', 'ar', 'arc', 'bz', 'bz2', 'cab', 'cpio',
                         'cpt', 'deb', 'dgc', 'dmg', 'gz', 'iso', 'jar', 'msi',
                         'pkg', 'rar', 'shar', 'tar', 'tbz', 'tgz', 'txz',
@@ -52,10 +51,9 @@ def safe_path(path):
 
 
 class FileSystemObject(  # pylint: disable=too-many-instance-attributes,too-many-public-methods
-        FileManagerAware, SettingsAware):
+    FileManagerAware, SettingsAware):
     basename = None
     pinyinname = None
-    pinyinname_nospace = None
     relative_path = None
     infostring = None
     path = None
@@ -101,8 +99,9 @@ class FileSystemObject(  # pylint: disable=too-many-instance-attributes,too-many
          SizeHumanReadableMtimeLinemode]
     )
 
-    def _get_pinyin (self, filename, delimiter):
+    def _get_pinyin(self, filename):
         try:
+            import pypinyin
             import pinyin
             pinyinname = []
             index = 0
@@ -111,7 +110,8 @@ class FileSystemObject(  # pylint: disable=too-many-instance-attributes,too-many
                 if match:
                     start, end = match.span(0)
                     pinyinname.append(filename[index:start])
-                    pinyinname.append(' '+pinyin.get(filename[start:end], format='strip', delimiter=delimiter)+' ')
+                    # pinyinname.append(' ' + pinyin.get(filename[start:end], format='strip') + ' ')
+                    pinyinname.append(' ' + pypinyin.pinyin(filename[start:end], style=pypinyin.Style.NORMAL) + ' ')
                     index = end
                 else:
                     pinyinname.append(filename[index:])
@@ -127,8 +127,7 @@ class FileSystemObject(  # pylint: disable=too-many-instance-attributes,too-many
         self.basename = basename(path)
 
         if _CN_CHARS.search(self.basename):
-            self.pinyinname = self._get_pinyin(self.basename, delimiter=' ')
-            self.pinyinname_nospace = self._get_pinyin(self.basename, delimiter='')
+            self.pinyinname = self._get_pinyin(self.basename)
 
         if basename_is_rel_to is None:
             self.relative_path = self.basename
@@ -253,8 +252,8 @@ class FileSystemObject(  # pylint: disable=too-many-instance-attributes,too-many
         self.audio = self._mimetype.startswith('audio')
         self.media = self.video or self.image or self.audio
         self.document = self._mimetype.startswith('text') \
-            or self.extension in DOCUMENT_EXTENSIONS \
-            or self.basename.lower() in DOCUMENT_BASENAMES
+                        or self.extension in DOCUMENT_EXTENSIONS \
+                        or self.basename.lower() in DOCUMENT_BASENAMES
         self.container = self.extension in CONTAINER_EXTENSIONS
 
         # pylint: disable=attribute-defined-outside-init

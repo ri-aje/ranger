@@ -304,8 +304,6 @@ class Directory(  # pylint: disable=too-many-instance-attributes,too-many-public
                     return False
                 if fobj.pinyinname and filter_search(fobj.pinyinname):
                     return True
-                if fobj.pinyinname_nospace and filter_search(fobj.pinyinname_nospace):
-                    return True
                 return False
             filters.append(filter_search)
 
@@ -317,8 +315,6 @@ class Directory(  # pylint: disable=too-many-instance-attributes,too-many-public
                 if not self.settings.pinyin_matching:
                     return False
                 if fobj.pinyinname and temporary_filter_search(fobj.pinyinname):
-                    return True
-                if fobj.pinyinname_nospace and temporary_filter_search(fobj.pinyinname_nospace):
                     return True
                 return False
             filters.append(temporary_filter_search)
@@ -340,8 +336,6 @@ class Directory(  # pylint: disable=too-many-instance-attributes,too-many-public
                         # when pinyin matching is turned on globally.
                         if fobj.pinyinname and stack_filter_search(fobj.pinyinname):
                             return True
-                        if fobj.pinyinname_nospace and stack_filter_search(fobj.pinyinname_nospace):
-                            return True
                         return False
                     filters.append(stack_filter_search)
 
@@ -356,8 +350,6 @@ class Directory(  # pylint: disable=too-many-instance-attributes,too-many-public
                 if not isinstance(self.temporary_stack_filter, NameFilter):
                     return False
                 if fobj.pinyinname and temporary_stack_filter_search(fobj.pinyinname):
-                    return True
-                if fobj.pinyinname_nospace and temporary_stack_filter_search(fobj.pinyinname_nospace):
                     return True
                 return False
             filters.append(temporary_stack_filter_search)
