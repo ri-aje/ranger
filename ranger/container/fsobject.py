@@ -111,7 +111,8 @@ class FileSystemObject(  # pylint: disable=too-many-instance-attributes,too-many
                     start, end = match.span(0)
                     pinyinname.append(filename[index:start])
                     # pinyinname.append(' ' + pinyin.get(filename[start:end], format='strip') + ' ')
-                    pinyinname.append(' ' + pypinyin.pinyin(filename[start:end], style=pypinyin.Style.NORMAL) + ' ')
+                    pinyins = [pinyin for pinyins in pypinyin.pinyin(filename[start:end], style=pypinyin.Style.NORMAL) for pinyin in pinyins]
+                    pinyinname.append(' ' + ''.join(pinyins) + ' ')
                     index = end
                 else:
                     pinyinname.append(filename[index:])
