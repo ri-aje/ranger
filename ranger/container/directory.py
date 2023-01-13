@@ -296,63 +296,15 @@ class Directory(  # pylint: disable=too-many-instance-attributes,too-many-public
             filters.append(inode_filter_func)
 
         if self.filter:
-            def filter_search(fobj):
-                filter_search = self.filter.search
-                if filter_search(fobj.relative_path):
-                    return True
-                if not self.settings.pinyin_matching:
-                    return False
-                if fobj.pinyinname and filter_search(fobj.pinyinname):
-                    return True
-                return False
-            filters.append(filter_search)
-
+            filter_search = self.filter.search
+            filters.append(lambda fobj: filter_search(fobj.basename))
         if self.temporary_filter:
-            def temporary_filter_search(fobj):
-                temporary_filter_search = self.temporary_filter.search
-                if temporary_filter_search(fobj.basename):
-                    return True
-                if not self.settings.pinyin_matching:
-                    return False
-                if fobj.pinyinname and temporary_filter_search(fobj.pinyinname):
-                    return True
-                return False
-            filters.append(temporary_filter_search)
+            temporary_filter_search = self.temporary_filter.search
+            filters.append(lambda fobj: temporary_filter_search(fobj.basename))
 
-        if not self.settings.pinyin_matching: # no pinyin match, original behavior.
-            filters.extend(self.filter_stack)
-        else:
-            for stack_filter in self.filter_stack:
-                from ranger.core.filter_stack import NameFilter
-                if not isinstance(stack_filter, NameFilter):
-                    filters.append(stack_filter)
-                else:
-                    # for NameFilter, alter them to honor pinyin match.
-                    def stack_filter_search(fobj):
-                        stack_filter_search = stack_filter.regex.search
-                        if stack_filter_search(fobj.basename):
-                            return True
-                        # no need to check pinyin match setting, since control only reaches here
-                        # when pinyin matching is turned on globally.
-                        if fobj.pinyinname and stack_filter_search(fobj.pinyinname):
-                            return True
-                        return False
-                    filters.append(stack_filter_search)
-
+        filters.extend(self.filter_stack)
         if self.temporary_stack_filter:
-            def temporary_stack_filter_search(fobj):
-                temporary_stack_filter_search = self.temporary_stack_filter.regex.search
-                if temporary_stack_filter_search(fobj.basename):
-                    return True
-                if not self.settings.pinyin_matching:
-                    return False
-                from ranger.core.filter_stack import NameFilter
-                if not isinstance(self.temporary_stack_filter, NameFilter):
-                    return False
-                if fobj.pinyinname and temporary_stack_filter_search(fobj.pinyinname):
-                    return True
-                return False
-            filters.append(temporary_stack_filter_search)
+            filters.append(self.temporary_stack_filter)
 
         self.files = [f for f in self.files_all if accept_file(f, filters)]
 

@@ -47,14 +47,17 @@ def filter_combinator(combinator_name):
 @stack_filter("name")
 class NameFilter(BaseFilter):
     def __init__(self, pattern):
-        self.pattern = pattern
         options = re.UNICODE
         if pattern.islower():
             options |= re.IGNORECASE
         self.regex = re.compile(pattern, options)
 
     def __call__(self, fobj):
-        return self.regex.search(fobj.relative_path)
+        if self.regex.search(fobj.relative_path):
+            return True
+        if hasattr(fobj, 'pinyinname') and fobj.pinyinname:
+            return self.regex.search(fobj.piyinname)
+        return False
 
     def __str__(self):
         return "<name =~ /{pat}/>".format(pat=self.pattern)
