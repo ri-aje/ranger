@@ -1135,13 +1135,13 @@ class Actions(  # pylint: disable=too-many-instance-attributes,too-many-public-m
             ranger.args.cachedir,
             self.sha512_encode(path, inode=fobj.stat.st_ino)
         )
-        if (self.settings.preview_images and os.path.isfile(cacheimg)
-                and fobj.stat.st_mtime <= os.path.getmtime(cacheimg)):
-            data['foundpreview'] = True
-            data['imagepreview'] = True
-            pager.set_image(cacheimg)
-            data['loading'] = False
-            return cacheimg
+        if (self.settings.preview_images and os.path.isfile(cacheimg)):
+            if fobj.stat.st_mtime <= os.path.getmtime(cacheimg):
+                data['foundpreview'] = True
+                data['imagepreview'] = True
+                pager.set_image(cacheimg)
+                data['loading'] = False
+                return cacheimg
 
         def on_after(signal):
             rcode = signal.process.poll()
