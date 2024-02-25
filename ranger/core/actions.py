@@ -327,6 +327,13 @@ class Actions(  # pylint: disable=too-many-instance-attributes,too-many-public-m
 
         macros['d'] = macro_val(lambda: self.fm.thisdir.path, fallback='.')
 
+        # %b stands for basename of the files without the extensions.
+        macros['b'] = lambda: [os.path.splitext(file.relative_path)[0] for file in
+                               self.fm.thistab.get_selection()]
+        # similarly, %e stands for extension of the files, without the leading dot, if any.
+        macros['e'] = lambda: [os.path.splitext(file.relative_path)[1].lstrip('.') for file in
+                               self.fm.thistab.get_selection()]
+
         # define d/f/p/s macros for each tab
         for i in range(1, 10):
             # pylint: disable=cell-var-from-loop
