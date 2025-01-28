@@ -744,6 +744,18 @@ class UeberzugImageDisplayer(ImageDisplayer):
                 and not self.process.stdin.closed):
             return
 
+        # scrolling through a list of hi-res images would result in ueberzug
+        # receiving a sequence of `add`, `removed`, ..., `add` commands and
+        # only the last `add` would stay around. the front `add`s would still
+        # result in rendering, only to be thrown away by the immediate `remove`
+        # command as the cursor just moved on, except the very last one when
+        # the cursor settled on.
+        # searching in git and I found ueberzugpp, which claims to be a drop-in
+        # replacement to the now defunct ueberzug app, but it seems to suffer
+        # from the same issue, e.g.,
+        # https://github.com/jstkdng/ueberzugpp/issues/241#issuecomment-2618091120
+        # nonetheless, the solution is with ueberzug, not with ranger.
+
         # We cannot close the process because that stops the preview.
         # pylint: disable=consider-using-with
         self.process = Popen(['ueberzug', 'layer', '--silent'], cwd=self.working_dir,
